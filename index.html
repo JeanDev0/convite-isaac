@@ -49,11 +49,19 @@
     padding-bottom:calc(9vh + env(safe-area-inset-bottom,0px));
   }
   .hint{
-    position:relative;z-index:30;color:#fff;font-weight:700;text-align:center;font-size:1.05rem;
-    text-shadow:0 1px 6px rgba(50,80,50,.6);transition:opacity .3s;
+    position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:40;
+    transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;
+    background:var(--bg);color:var(--brown);border-radius:26px;padding:12px 22px 6px;
+    font-weight:700;font-size:1.05rem;text-align:center;white-space:nowrap;
+    box-shadow:0 6px 22px rgba(60,90,55,.35);transition:opacity .3s;pointer-events:none;
   }
-  .hint span{display:block;font-size:1.8rem;animation:bob 1.6s ease-in-out infinite}
-  @keyframes bob{50%{transform:translateY(8px)}}
+  .hint .chev{display:block;width:26px;height:26px;margin-top:-2px}
+  .hint .chev path{fill:none;stroke:var(--leaf-2);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+  .hint .chev:nth-of-type(1){animation:chev 1.4s ease-in-out infinite}
+  .hint .chev:nth-of-type(2){animation:chev 1.4s ease-in-out .25s infinite;margin-top:-16px}
+  @keyframes chev{0%,100%{opacity:.25;transform:translateY(-3px)}50%{opacity:1;transform:translateY(5px)}}
+  .hint.pulse{animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{50%{transform:translateX(-50%) scale(1.05)}}
 
   section{
     min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -121,13 +129,29 @@
   /* presentes */
   .gifts{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px;width:100%}
   .gifts li{background:#fff;border:2px solid var(--leaf-3);border-radius:16px;padding:14px 16px;font-weight:600}
+
+  /* safari */
+  #safari{padding-bottom:20px}
+  .parade{display:flex;align-items:flex-end;justify-content:center;gap:2px;width:100%;margin-top:18px}
+  .an{flex:1 1 0;max-width:130px;opacity:0;transform:translateY(60px) scale(.7);transform-origin:50% 100%;
+    transition:opacity .6s ease, transform .9s cubic-bezier(.3,1.5,.5,1)}
+  .an svg{display:block;width:100%;height:auto;animation:bob2 3.4s ease-in-out infinite;transform-origin:50% 100%}
+  .an.tall{flex-basis:0;max-width:95px}
+  .parade.in .an{opacity:1;transform:none}
+  .parade.in .an:nth-child(1){transition-delay:.1s}
+  .parade.in .an:nth-child(2){transition-delay:.35s}
+  .parade.in .an:nth-child(3){transition-delay:.6s}
+  .parade.in .an:nth-child(4){transition-delay:.85s}
+  .an:nth-child(2) svg{animation-delay:-.8s}.an:nth-child(3) svg{animation-delay:-1.6s}.an:nth-child(4) svg{animation-delay:-2.4s}
+  @keyframes bob2{50%{transform:translateY(-6px) rotate(-1.5deg)}}
   footer{padding:30px 20px calc(60px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--sage);font-weight:600;position:relative;z-index:5}
   footer .animals{font-size:2rem;letter-spacing:.3rem;margin-bottom:8px}
 
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
     .rv,.monkey{transition:none;opacity:1;transform:none}
-    .monkey svg,.hint span{animation:none}
+    .monkey svg,.hint .chev,.hint.pulse,.an svg{animation:none}
+    .an{opacity:1;transform:none;transition:none}
   }
 </style>
 </head>
@@ -140,9 +164,14 @@
   <div class="grp" id="gC"></div>
 </div>
 
+<div class="hint pulse" id="hint" aria-hidden="true">
+  Deslize para baixo e abra o convite 🐵
+  <svg class="chev" viewBox="0 0 30 30"><path d="M6 10 L15 19 L24 10"/></svg>
+  <svg class="chev" viewBox="0 0 30 30"><path d="M6 10 L15 19 L24 10"/></svg>
+</div>
+
 <main>
   <div class="intro">
-    <div class="hint" id="hint">Role para entrar na selva<span>↓</span></div>
   </div>
 
   <section id="hero">
@@ -214,6 +243,134 @@
         <input type="number" id="qtd" min="1" max="20" value="1" inputmode="numeric">
       </label>
       <p class="err" id="err" role="alert"></p>
+      <button type="submit" class="btn">Enviar pelo WhatsApp</button>
+    </form>
+  </section>
+
+  <section id="presentes">
+    <h2 class="script rv">Sugestões de presentes</h2>
+    <p class="sub rv">Sem compromisso, o carinho já é o maior presente.</p>
+    <ul class="gifts rv" id="gifts"></ul>
+  </section>
+  <section id="safari">
+    <h2 class="script rv">Vem para o safári!</h2>
+    <p class="sub rv">Uma aventura cheia de bichinhos esperando por você.</p>
+    <div class="parade rv" id="parade">
+      <div class="an tall"><svg viewBox="0 0 120 200" role="img" aria-label="Girafa">
+        <rect x="42" y="66" width="36" height="134" rx="14" fill="#f0c36a"/>
+        <circle cx="52" cy="110" r="6" fill="#c48a3a"/><circle cx="68" cy="140" r="7" fill="#c48a3a"/><circle cx="54" cy="168" r="6" fill="#c48a3a"/><circle cx="66" cy="92" r="5" fill="#c48a3a"/>
+        <ellipse cx="22" cy="46" rx="14" ry="9" fill="#f0c36a" transform="rotate(-25 22 46)"/><ellipse cx="98" cy="46" rx="14" ry="9" fill="#f0c36a" transform="rotate(25 98 46)"/>
+        <ellipse cx="22" cy="46" rx="7" ry="4" fill="#f1c9b8" transform="rotate(-25 22 46)"/><ellipse cx="98" cy="46" rx="7" ry="4" fill="#f1c9b8" transform="rotate(25 98 46)"/>
+        <rect x="46" y="12" width="5" height="22" rx="2.5" fill="#c48a3a"/><rect x="69" y="12" width="5" height="22" rx="2.5" fill="#c48a3a"/>
+        <circle cx="48.5" cy="11" r="6" fill="#7b5434"/><circle cx="71.5" cy="11" r="6" fill="#7b5434"/>
+        <ellipse cx="60" cy="52" rx="35" ry="29" fill="#f0c36a"/>
+        <circle cx="40" cy="38" r="5" fill="#c48a3a"/><circle cx="82" cy="40" r="4" fill="#c48a3a"/>
+        <ellipse cx="60" cy="66" rx="22" ry="14" fill="#fbeedd"/>
+        <circle cx="53" cy="66" r="2" fill="#7b5434"/><circle cx="67" cy="66" r="2" fill="#7b5434"/>
+        <circle cx="47" cy="48" r="4.5" fill="#3b2a1c"/><circle cx="73" cy="48" r="4.5" fill="#3b2a1c"/>
+        <circle cx="48.5" cy="46.5" r="1.5" fill="#fff"/><circle cx="74.5" cy="46.5" r="1.5" fill="#fff"/>
+        <circle cx="38" cy="60" r="6" fill="#f1a9a0" opacity=".55"/><circle cx="82" cy="60" r="6" fill="#f1a9a0" opacity=".55"/>
+        <path d="M54 74 Q60 79 66 74" fill="none" stroke="#7b5434" stroke-width="2" stroke-linecap="round"/>
+      </svg></div>
+      <div class="an"><svg viewBox="0 0 160 150" role="img" aria-label="Elefante">
+        <circle cx="32" cy="72" r="34" fill="#b9c4c9"/><circle cx="128" cy="72" r="34" fill="#b9c4c9"/>
+        <circle cx="32" cy="72" r="20" fill="#f1c9b8" opacity=".7"/><circle cx="128" cy="72" r="20" fill="#f1c9b8" opacity=".7"/>
+        <circle cx="80" cy="70" r="46" fill="#cfd8dc"/>
+        <path d="M80 88 Q80 128 102 130" fill="none" stroke="#cfd8dc" stroke-width="22" stroke-linecap="round"/>
+        <path d="M70 100 Q80 104 90 100 M72 110 Q80 114 88 110" fill="none" stroke="#b9c4c9" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="62" cy="62" r="5" fill="#3b2a1c"/><circle cx="98" cy="62" r="5" fill="#3b2a1c"/>
+        <circle cx="63.5" cy="60.5" r="1.6" fill="#fff"/><circle cx="99.5" cy="60.5" r="1.6" fill="#fff"/>
+        <circle cx="48" cy="80" r="8" fill="#f1a9a0" opacity=".55"/><circle cx="112" cy="80" r="8" fill="#f1a9a0" opacity=".55"/>
+      </svg></div>
+      <div class="an"><svg viewBox="0 0 140 150" role="img" aria-label="Zebra">
+        <defs><clipPath id="zh"><ellipse cx="70" cy="80" rx="44" ry="48"/></clipPath></defs>
+        <ellipse cx="34" cy="36" rx="14" ry="20" fill="#fff" stroke="#3b3b3b" stroke-width="3" transform="rotate(-20 34 36)"/>
+        <ellipse cx="106" cy="36" rx="14" ry="20" fill="#fff" stroke="#3b3b3b" stroke-width="3" transform="rotate(20 106 36)"/>
+        <ellipse cx="34" cy="38" rx="6" ry="11" fill="#f1c9b8" transform="rotate(-20 34 38)"/>
+        <ellipse cx="106" cy="38" rx="6" ry="11" fill="#f1c9b8" transform="rotate(20 106 38)"/>
+        <ellipse cx="70" cy="80" rx="44" ry="48" fill="#fff"/>
+        <g clip-path="url(#zh)" fill="#2e2e2e">
+          <path d="M44 30 L56 30 L52 70 L42 66Z"/><path d="M84 30 L96 30 L98 66 L88 70Z"/>
+          <path d="M26 66 L40 74 L26 90Z"/><path d="M114 66 L100 74 L114 90Z"/>
+          <path d="M64 28 L76 28 L74 52 L66 52Z"/>
+          <path d="M26 100 L38 96 L30 116Z"/><path d="M114 100 L102 96 L110 116Z"/>
+        </g>
+        <ellipse cx="70" cy="108" rx="28" ry="19" fill="#4a4a4a"/>
+        <circle cx="62" cy="106" r="2.2" fill="#222"/><circle cx="78" cy="106" r="2.2" fill="#222"/>
+        <circle cx="52" cy="78" r="5" fill="#3b2a1c"/><circle cx="88" cy="78" r="5" fill="#3b2a1c"/>
+        <circle cx="53.5" cy="76.5" r="1.6" fill="#fff"/><circle cx="89.5" cy="76.5" r="1.6" fill="#fff"/>
+        <circle cx="42" cy="92" r="6" fill="#f1a9a0" opacity=".6"/><circle cx="98" cy="92" r="6" fill="#f1a9a0" opacity=".6"/>
+      </svg></div>
+      <div class="an"><svg viewBox="0 0 150 150" role="img" aria-label="Leãozinho">
+        <circle cx="75" cy="78" r="60" fill="#c9833a"/>
+        <circle cx="75" cy="78" r="52" fill="#d9954a"/>
+        <circle cx="38" cy="38" r="15" fill="#f2c27a"/><circle cx="112" cy="38" r="15" fill="#f2c27a"/>
+        <circle cx="38" cy="38" r="8" fill="#f1c9b8"/><circle cx="112" cy="38" r="8" fill="#f1c9b8"/>
+        <circle cx="75" cy="82" r="39" fill="#f2c27a"/>
+        <ellipse cx="75" cy="100" rx="21" ry="16" fill="#fbeedd"/>
+        <path d="M67 90 L83 90 L75 99Z" fill="#7b5434" stroke="#7b5434" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M75 99 L75 106 M75 106 Q68 112 62 106 M75 106 Q82 112 88 106" fill="none" stroke="#7b5434" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="60" cy="74" r="5" fill="#3b2a1c"/><circle cx="90" cy="74" r="5" fill="#3b2a1c"/>
+        <circle cx="61.5" cy="72.5" r="1.6" fill="#fff"/><circle cx="91.5" cy="72.5" r="1.6" fill="#fff"/>
+        <circle cx="48" cy="92" r="7" fill="#f1a9a0" opacity=".55"/><circle cx="102" cy="92" r="7" fill="#f1a9a0" opacity=".55"/>
+      </svg></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Esperamos você!
+</footer>
+
+<script>
+/* ====== EDITE AQUI ====== */
+const WHATSAPP = "55DDDNUMERO";   // ex.: 5584999998888 (só números, com 55 + DDD)
+const FESTA = new Date(new Date().getFullYear(), 1, 7, 16, 0, 0); // 07/02 às 16h
+const PRESENTES = [
+  "Roupinhas tamanho 1 a 2 anos",
+  "Brinquedos educativos"
+];
+/* ======================== */
+
+/* ---- gerador de folhas de palmeira ---- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function frondSVG(r){
+  const cols=['#8fa98a','#7c9a77','#a3bb9b','#6e8c69'];
+  let s='<svg viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">';
+  s+='<path d="M100 420 Q94 220 100 24" fill="none" stroke="#6e8c69" stroke-width="3" stroke-linecap="round"/>';
+  const n=13;
+  for(let i=0;i<n;i++){
+    const t=i/n, y=395-t*355, len=(78*(1-t*.7)+14)*(.9+r()*.25);
+    const a=.45+t*.35+(r()-.5)*.12;
+    for(const side of [-1,1]){
+      const ex=100+side*len*Math.cos(a), ey=y-len*Math.sin(a)+len*.18;
+      const mx=(100+ex)/2, my=(y+ey)/2-len*.1, w=7+len*.07;
+      const c=cols[(r()*cols.length)|0];
+      s+=`<path d="M100 ${y} Q${mx} ${my-w} ${ex} ${ey} Q${mx} ${my+w} 100 ${y}Z" fill="${c}"/>`;
+    }
+  }
+  s+='<path d="M100 26 Q86 8 100 -6 Q114 8 100 26Z" fill="#8fa98a"/></svg>';
+  return s;
+}
+function addFrond(parent,r,{x,y,w,rot,op=1}){
+  const d=document.createElement('div');
+  d.className='frond';
+  d.style.cssText=`left:${x}%;top:${y}%;width:${w}vmin;transform:translate(-50%,-100%) rotate(${rot}deg);opacity:${op}`;
+  d.innerHTML=frondSVG(r);
+  parent.appendChild(d);
+}
+const r=rng(7);
+const gL=document.getElementById('gL'), gR=document.getElementById('gR'), gC=document.getElementById('gC');
+
+// esquerda: bases fora da tela, apontando para a direita
+for(let i=0;i<9;i++){
+  const y=(i/8)*120-5;
+  addFrond(gL,r,{x:-6+r()*10,y:y+14,w:62+r()*18,rot:68+r()*40});
+}
+// direita: espelhado
+for(let i=0;i<9;i++){
+  const y=(i/8)*120-5;
+  addFrond(gR,r,{x:106-r()*10,y:y+14,w:62+r()*18,rot:-(6 role="alert"></p>
       <button type="submit" class="btn">Enviar pelo WhatsApp</button>
     </form>
   </section>
